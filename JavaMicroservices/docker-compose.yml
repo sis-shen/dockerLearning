@@ -1,0 +1,167 @@
+services:
+  mysql-master:
+    build:
+      context: ./mysql
+      dockerfile: ./master/Dockerfile-master
+    image: mysqlmaster:2.0
+    restart: always
+    container_name: mysql-master 
+    volumes:
+      - ./mastervarlib:/var/lib/mysql
+    ports:
+      - 9306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    privileged: true
+    command: ['--server-id=1', 
+          '--log-bin=master-bin', 
+          '--binlog-ignore-db=mysql', 
+          '--binlog_cache_size=256M', 
+          '--binlog_format=mixed', 
+          '--lower_case_table_names=1', 
+          '--character-set-server=utf8', 
+          '--collation-server=utf8_general_ci'] 
+
+  mysql-slave: 
+    build: 
+      context: ./mysql
+      dockerfile: ./slave/Dockerfile-slave 
+    image: mysqlslave:2.0 
+    restart: always 
+    container_name: mysql-slave 
+    volumes: 
+      - ./slavevarlib:/var/lib/mysql 
+    ports: 
+      - 9307:3306 
+    environment:
+      MYSQL_ROOT_PASSWORD: root 
+    privileged: true 
+    command: ['--server-id=2', 
+              '--relay_log=slave-relay', 
+              '--lower_case_table_names=1', 
+              '--character-set-server=utf8', 
+              '--collation-server=utf8_general_ci'] 
+    depends_on: 
+      - mysql-master
+
+  redis01: 
+      image: myredis:v1.0 
+      build: ./redis 
+      ports: 
+        - 8899:6379 
+      container_name: redis01 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis02: 
+      image: myredis:v1.0 
+      container_name: redis02 
+      healthcheck:
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis03: 
+      image: myredis:v1.0 
+      container_name: redis03 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis04: 
+      image: myredis:v1.0 
+      container_name: redis04 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis05: 
+      image: myredis:v1.0 
+      container_name: redis05 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis06: 
+      image: myredis:v1.0 
+      container_name: redis06 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis07: 
+      image: myredis:v1.0 
+      container_name: redis07 
+      entrypoint: ["/redis/redis-cli","--cluster","create","redis01:6379","redis02:6379","redis03:6379","redis04:6379","redis05:6379","redis06:6379","--cluster-replicas","1","-a","123456","--cluster-yes"] 
+      depends_on:
+        redis01: 
+         condition: service_healthy 
+        redis02: 
+         condition: service_healthy 
+        redis03: 
+         condition: service_healthy 
+        redis04: 
+         condition: service_healthy 
+        redis05: 
+         condition: service_healthy 
+        redis06: 
+         condition: service_healthy
+
+
+
+  myuser: 
+    image: myuser:v2.0 
+    build: 
+      context: ./app/user 
+    depends_on: 
+        redis01: 
+         condition: service_healthy 
+        redis02: 
+         condition: service_healthy 
+        redis03: 
+         condition: service_healthy 
+        redis04: 
+         condition: service_healthy 
+        redis05: 
+         condition: service_healthy 
+        redis06: 
+         condition: service_healthy 
+        mysql-master: 
+         condition: service_started 
+  myuser2: 
+    image: myuser:v2.0 
+    build: 
+      context: ./app/user 
+    depends_on: 
+        redis01: 
+         condition: service_healthy 
+        redis02: 
+         condition: service_healthy 
+        redis03: 
+         condition: service_healthy 
+        redis04: 
+         condition: service_healthy 
+        redis05: 
+         condition: service_healthy 
+        redis06: 
+         condition: service_healthy 
+        mysql-master: 
+         condition: service_started  
+
+  web: 
+    image: mynginx:v2.0 
+    build: 
+      context: ./nginx 
+    ports:  
+      - 8960:80 
+    depends_on: 
+      myuser: 
+         condition: service_started 
+      myuser2: 
+         condition: service_started
