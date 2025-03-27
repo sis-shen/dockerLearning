@@ -1,4 +1,5 @@
-FROM ubuntu:22.04 AS buildstage1
+ARG SYSVERSION=22.04
+FROM ubuntu:${SYSVERSION} AS buildstage1
 LABEL version="1.0" desc="sup test image"
 ENV MYROOTDIR=/data/web/html
 COPY ./nginx-1.24.0.tar.gz &{MYROOTDIR}
@@ -12,4 +13,9 @@ RUN cd /data/src/nginx-1.24.0\
 && make && make install
 
 COPY ./nginx.conf /usr/local/nginx/conf/ 
-CMD ["/usr/local/nginx/sbin/nginx","-g","daemon off"]
+
+EXPOSE 80/tcp
+
+CMD ["/usr/local/nginx/sbin/nginx","-g","daemon off;"]
+
+VOLUME [ "/data" ]

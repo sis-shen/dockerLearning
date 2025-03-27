@@ -1,0 +1,18 @@
+services:
+  web:
+    image: mynginx:v3.0
+    build: 
+      context: ./nginx
+    ports:
+      - 8112:80
+    depends_on:
+      mycppweb:
+        condition: service_started
+      mycppweb2:
+        condition: service_started
+  mycppweb:
+    build:
+      context: ./cppweb
+    image: mycppweb:v2.0
+  mycppweb2:
+    image: mycppweb:v2.0

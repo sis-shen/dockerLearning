@@ -1,0 +1,69 @@
+services: 
+  redis01: 
+      image: myredis:v1.0 
+      build: ./redis 
+      ports: 
+        - 8899:6379 
+      container_name: redis01 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis02: 
+      image: myredis:v1.0 
+      container_name: redis02 
+      healthcheck:
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis03: 
+      image: myredis:v1.0 
+      container_name: redis03 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis04: 
+      image: myredis:v1.0 
+      container_name: redis04 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis05: 
+      image: myredis:v1.0 
+      container_name: redis05 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis06: 
+      image: myredis:v1.0 
+      container_name: redis06 
+      healthcheck: 
+        test:  /redis/redis-cli ping 
+        interval: 10s 
+        timeout: 5s 
+        retries: 10 
+  redis07: 
+      image: myredis:v1.0 
+      container_name: redis07 
+      entrypoint: ["/redis/redis-cli","--cluster","create","redis01:6379","redis02:6379","redis03:6379","redis04:6379","redis05:6379","redis06:6379","--cluster-replicas","1","-a","123456","--cluster-yes"] 
+      depends_on:
+        redis01: 
+         condition: service_healthy 
+        redis02: 
+         condition: service_healthy 
+        redis03: 
+         condition: service_healthy 
+        redis04: 
+         condition: service_healthy 
+        redis05: 
+         condition: service_healthy 
+        redis06: 
+         condition: service_healthy

@@ -8,4 +8,3 @@ create TABLE users(
 )ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO users (sno,sname) VALUES (1,'pony'),(2,'sup');
-

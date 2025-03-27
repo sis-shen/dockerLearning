@@ -1,0 +1,29 @@
+services: 
+  web:
+    image: nginx:1.24.0
+    volumes:
+      - ./nginxconf/:/etc/nginx/conf.d
+    depends_on:
+      - backend
+    ports:
+      - 8765:80
+  backend:
+    image: openjdk:17
+    command: java -jar /app/dockerTestMySQL-0.0.1-SNAPSHOT.jar
+    volumes:
+      - ./app/:/app/
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=Shendongfa!1
+    volumes:
+      - ./mysql/varlib/:/var/lib/mysql
+      - ./mysql/initdb/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: mysql -u supRoot -p Shendongfa!1 -e 'select 1'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      

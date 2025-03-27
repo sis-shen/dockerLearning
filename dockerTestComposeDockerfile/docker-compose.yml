@@ -1,0 +1,10 @@
+services:
+  mynginx:
+    image: mytestbuildimage:1.0
+    build: ./mynginx
+
+  mynginx2:
+    image: mytestbuildimage:2.0
+    build:
+      context: ./mynginx2
+      dockerfile: Dockerfile2
