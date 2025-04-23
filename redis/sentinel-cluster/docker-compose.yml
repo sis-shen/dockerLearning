@@ -1,0 +1,48 @@
+services:
+  master:
+    image: redis:7.2.4
+    container_name: redis-master
+    command: redis-server --appendonly yes
+    ports:
+      - 6380:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  slave1: 
+    image: redis:7.2.4
+    restart: always
+    command: redis-server --appendonly yes --slaveof redis-master 6379
+    ports:
+      - 6381:6379
+    depends_on:
+      master:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    
+  slave2: 
+    image: redis:7.2.4
+    restart: always
+    command: redis-server --appendonly yes --slaveof redis-master 6379
+    ports:
+      - 6382:6379
+    depends_on:
+      master:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  
+networks: 
+  default:
+    name: redis-network
+    driver: bridge
