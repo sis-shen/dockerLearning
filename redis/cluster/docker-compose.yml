@@ -1,0 +1,182 @@
+services:
+  redis1:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis1/:/etc/redis/
+    ports:
+      - 6380:6379
+      - 16380:16379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.101
+
+  redis2:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis2/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.102
+
+  redis3:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis3/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.103
+
+  redis4:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis4/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.104
+
+  redis5:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis5/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.105
+
+  redis6:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis6/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.106
+
+  redis7:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis7/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.107
+
+  redis8:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis8/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.108
+
+  redis9:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis9/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.109
+
+  redis10:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ./redis10/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.110
+
+  redis11:
+    image: redis:7.2.4
+    command: redis-server /etc/redis/redis.conf && redis-cli --cluster create redis1:6379 redis2:6379 redis3:6379 redis4:6379 redis5:6379 redis6:6379 redis7:6379 redis8:6379 redis9:6379  --cluster-replicas 2
+    volumes: 
+      - ./redis11/:/etc/redis/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      redis1:
+        condition: service_healthy
+      redis2:
+        condition: service_healthy
+      redis3:
+        condition: service_healthy
+      redis4:
+        condition: service_healthy
+      redis5:
+        condition: service_healthy
+      redis6:
+        condition: service_healthy
+      redis7:
+        condition: service_healthy
+      redis8:
+        condition: service_healthy
+      redis9:
+        condition: service_healthy
+    networks:
+      mynet:
+        ipv4_address: 172.30.0.111
+
+networks:
+  mynet:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

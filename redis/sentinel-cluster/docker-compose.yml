@@ -41,6 +41,39 @@ services:
       timeout: 3s
       retries: 30
 
+  sentinel1:
+    image: redis:7.2.4
+    restart: always
+    command: redis-sentinel /etc/redis/sentinel.conf
+    volumes:
+      - ./sentinel1.conf:/etc/redis/sentinel.conf
+    ports:
+      - 26380:26379
+    depends_on:
+      master:
+        condition: service_healthy
+    
+  sentinel2:
+    image: redis:7.2.4
+    restart: always
+    command: redis-sentinel /etc/redis/sentinel.conf
+    volumes:
+      - ./sentinel2.conf:/etc/redis/sentinel.conf
+    depends_on:
+      master:
+        condition: service_healthy
+  sentinel3:
+    image: redis:7.2.4
+    restart: always
+    command: redis-sentinel /etc/redis/sentinel.conf
+    volumes:
+      - ./sentinel3.conf:/etc/redis/sentinel.conf
+    ports:
+      - 26379:26379
+    depends_on:
+      master:
+        condition: service_healthy    
+  
   
 networks: 
   default:
